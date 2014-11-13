@@ -241,7 +241,8 @@ var togglbutton = {
     document.addEventListener("click", handler);
   },
 
-  createCustomTimerLink: function (issue) {
+  createCustomTimerLink: function (params) {
+    var issue = params.issue;
     var container = createTag('div', 'toggl-button-container');
     var taskLink = createTaskLink();
     var projectSelect;
@@ -308,6 +309,11 @@ var togglbutton = {
       });
       container.appendChild(timerLink);
       createReportsLink();
+      chrome.extension.sendMessage({type: 'spentTime', taskId: taskId}, function(response) {
+        if (params.onReports) {
+          params.onReports({total: response.total});
+        }
+      });
       return timerLink;
     }
 

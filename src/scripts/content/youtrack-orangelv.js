@@ -2,6 +2,33 @@
 /*global TogglButton: false*/
 'use strict';
 
+function millisecondsToString(milliseconds) {
+    var result = '';
+    var seconds = milliseconds / 1000;
+    var years = Math.floor(seconds / 31536000);
+    if (years) {
+        result += years + 'y';
+    }
+    var weeks = Math.floor((seconds % 31536000) / 604800);
+    if (weeks) {
+        result += weeks + 'w';
+    }
+    var days = Math.floor(((seconds % 31536000) % 604800) / 86400);
+    if (days) {
+        result += days + 'd';
+    }
+    var hours = Math.floor((((seconds % 31536000) % 604800) % 86400) / 3600);
+    if (hours) {
+        result += hours + 'h';
+    }
+    var minutes = Math.floor(((((seconds % 31536000) % 604800) % 86400) % 3600) / 60);
+    if (minutes) {
+      result += minutes + 'm';
+    }
+    result += (((((seconds % 31536000) % 604800) % 86400) % 3600) % 60) + 's';
+    return result;
+}
+
 togglbutton.render('.issueContainer', {}, function(container) {
     var toolbar;
     var issue = (function() {
@@ -56,10 +83,36 @@ togglbutton.render('.issueContainer', {}, function(container) {
     })();
 
     var link = togglbutton.createCustomTimerLink({
-        code: issue.code,
-        id: issue.id,
-        summary: summary,
-        estimation: estimation
+        issue: {
+          code: issue.code,
+          id: issue.id,
+          summary: summary,
+          estimation: estimation,
+        },
+        onReports: function(data) {
+          var table = document.querySelector('table.fsi-properties tbody');
+            var row = document.createElement('tr');
+
+            var label = document.createElement('div');
+            label.className = 'fsi-property-label';
+            label.appendChild(document.createTextNode('Toggl summary'));
+
+            var value = document.createElement('div');
+            value.appendChild(document.createTextNode(millisecondsToString(data.total)));
+
+            var column = document.createElement('td');
+            column.className = 'fsi-property';
+
+            var labelColumn = column.cloneNode();
+            labelColumn.appendChild(label);
+            row.appendChild(labelColumn);
+
+            var valueColumn = column.cloneNode();
+            valueColumn.appendChild(value);
+            row.appendChild(valueColumn);
+
+            table.appendChild(row);
+        }
     });
 
     toolbar.appendChild(link);

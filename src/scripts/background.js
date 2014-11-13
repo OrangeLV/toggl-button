@@ -8,6 +8,7 @@ var TogglButton = {
   $showPostPopup: true,
   $apiUrl: "https://old.toggl.com/api/v7",
   $newApiUrl: "https://www.toggl.com/api/v8",
+  $reportsApiUrl: "https://toggl.com/reports/api/v2",
   $sendResponse: null,
   $socket: null,
   $retrySocket: false,
@@ -258,6 +259,15 @@ var TogglButton = {
     });
   },
 
+  getSpentTime: function (req, sendResponse) {
+    TogglButton.ajax('/summary?workspace_id=' + TogglButton.$user.default_wid + '&user_agent=TogglButton&task_ids=' + req.taskId, {
+      baseUrl: TogglButton.$reportsApiUrl,
+      onLoad: function (xhr) {
+        sendResponse({success: true, total: JSON.parse(xhr.responseText).total_grand});
+      }
+    })
+  },
+
   ajax: function (url, opts) {
     var xhr = new XMLHttpRequest(),
       method = opts.method || 'GET',
@@ -275,7 +285,11 @@ var TogglButton = {
     if (credentials) {
       xhr.setRequestHeader('Authorization', 'Basic ' + btoa(credentials.username + ':' + credentials.password));
     }
-    xhr.send(JSON.stringify(opts.payload));
+    var data = null;
+    if (opts.payload) {
+      data = JSON.stringify(opts.payload);
+    }
+    xhr.send(data);
   },
 
   stopTimeEntry: function (timeEntry, sendResponse) {
@@ -599,6 +613,8 @@ var TogglButton = {
       TogglButton.setNannyInterval(request.state);
     } else if (request.type === 'showReports') {
       TogglButton.showReports(request);
+    } else if (request.type === 'spentTime') {
+      TogglButton.getSpentTime(request, sendResponse);
     } else if (request.type === 'userToken') {
       if (!TogglButton.$user) {
         TogglButton.fetchUser(TogglButton.$newApiUrl, request.apiToken);
