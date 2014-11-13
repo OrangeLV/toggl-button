@@ -105,6 +105,48 @@ var TogglButton = {
     });
   },
 
+  findProjects: function (req, sendResponse) {
+    var result = [];
+    TogglButton.$user.projects.forEach(function (project) {
+      if (project.name.indexOf('(' + req.issue.code + ')') != -1) {
+        result.push(project);
+      }
+    });
+    console.log(TogglButton.$user.projectMap);
+    sendResponse({success: true, projects: result});
+  },
+
+  findTask: function (req, sendResponse) {
+    var result;
+    TogglButton.$user.tasks.forEach(function (task) {
+      if (!result && task.name.indexOf(req.issue.code + '-' + req.issue.id) != -1) {
+        result = task;
+      }
+    });
+    sendResponse({success: !!result, task: result});
+  },
+
+  createTask: function (task, sendResponse) {
+    var entry = {
+      task: {
+        name: task.name,
+        pid: task.projectId,
+        wid: TogglButton.$user.default_wid,
+        estimated_seconds: task.estimation
+      }
+    };
+
+    TogglButton.ajax('/tasks', {
+      method: 'POST',
+      payload: entry,
+      onLoad: function (xhr) {
+        var responseData;
+        responseData = JSON.parse(xhr.responseText);
+        sendResponse({success: (xhr.status === 200), task: responseData.data});
+      }
+    });
+  },
+
   setupSocket: function () {
     var authenticationMessage, pingResponse;
     try {
@@ -287,6 +329,18 @@ var TogglButton = {
         }
       }
     });
+  },
+
+  showReports: function(req) {
+    var wid = TogglButton.$user.default_wid;
+    var tid = req.taskId;
+    if (TogglButton.$curEntry) {
+      wid = TogglButton.$curEntry.wid;
+      tid = TogglButton.$curEntry.tid;
+    }
+    if (!tid) { return; }
+    var url = 'https://www.toggl.com/app/reports/detailed/' + wid + '/period/thisMonth/tasks/' + tid + '/billable/both';
+    chrome.windows.create({ url: url });
   },
 
   setBrowserActionBadge: function () {
@@ -518,6 +572,12 @@ var TogglButton = {
       TogglButton.updateTimeEntry(request, sendResponse);
     } else if (request.type === 'stop') {
       TogglButton.stopTimeEntry(request, sendResponse);
+    } else if (request.type === 'findProjects') {
+      TogglButton.findProjects(request, sendResponse);
+    } else if (request.type === 'findTask') {
+      TogglButton.findTask(request, sendResponse);
+    } else if (request.type === 'createTask') {
+      TogglButton.createTask(request, sendResponse);
     } else if (request.type === 'toggle-popup') {
       localStorage.setItem("showPostPopup", request.state);
       TogglButton.$showPostPopup = request.state;
@@ -529,6 +589,8 @@ var TogglButton = {
       TogglButton.setNannyFromTo(request.state);
     } else if (request.type === 'toggle-nanny-interval') {
       TogglButton.setNannyInterval(request.state);
+    } else if (request.type === 'showReports') {
+      TogglButton.showReports(request);
     } else if (request.type === 'userToken') {
       if (!TogglButton.$user) {
         TogglButton.fetchUser(TogglButton.$newApiUrl, request.apiToken);
