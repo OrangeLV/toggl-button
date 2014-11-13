@@ -51,7 +51,7 @@
     "*://*.trac.wordpress.org/*",
     "*://bugs.jquery.com/*",
     "*://*.wunderlist.com/*",
-    "*://youtrack.orangelv.com/*",
+    "*://youtrack.orangelv.com/*"
   ],
   "icons": {
     "16": "images/icon-16.png",
@@ -91,7 +91,7 @@
         "*://bugs.jquery.com/*",
         "*://*.wunderlist.com/*",
         "*://*.toodledo.com/*",
-        "*://youtrack.orangelv.com/youtrack/issue/*"
+        "*://youtrack.orangelv.com/*"
       ],
       "css": ["styles/style.css"],
       "js": ["scripts/common.js"]
@@ -218,9 +218,9 @@
       "js": ["scripts/content/toodledo.js"]
     },
     {
-      "matches": ["*://youtrack.orangelv.com/youtrack/issue/*"],
+      "matches": ["*://youtrack.orangelv.com/*"],
       "css": ["styles/orangelv.css"],
       "js": ["scripts/content/youtrack-orangelv.js"]
-    },
+    }
   ]
 }
