@@ -420,6 +420,7 @@ var togglbutton = {
         opts = {
           type: 'timeEntry',
           respond: true,
+          taskId: invokeIfFunction(params.taskId),
           projectId: invokeIfFunction(params.projectId),
           description: invokeIfFunction(params.description),
           tags: invokeIfFunction(params.tags),
