@@ -224,6 +224,7 @@ var TogglButton = {
           start: start.toISOString(),
           description: timeEntry.description,
           wid: TogglButton.$user.default_wid,
+          tid: timeEntry.taskId || null,
           pid: timeEntry.projectId || null,
           tags: timeEntry.tags || null,
           billable: timeEntry.billable || false,
@@ -309,12 +310,19 @@ var TogglButton = {
   updateTimeEntry: function (timeEntry, sendResponse) {
     var entry;
     if (!TogglButton.$curEntry) { return; }
+
+    var taskId;
+    if (TogglButton.$curEntry.pid == timeEntry.pid) {
+      taskId = TogglButton.$curEntry.tid;
+    }
+
     TogglButton.ajax("/time_entries/" + TogglButton.$curEntry.id, {
       method: 'PUT',
       payload: {
         time_entry: {
           description: timeEntry.description,
           pid: timeEntry.pid,
+          tid: taskId || null,
           tags: timeEntry.tags
         }
       },
