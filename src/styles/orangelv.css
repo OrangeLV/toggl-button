@@ -1,0 +1,9 @@
+.toggl-button-container {
+    display: inline-block !important;
+}
+.toggl-button-container select {
+  margin-right: 5px;
+}
+.toggl-button-container a + a {
+    margin-left: 10px;
+}
