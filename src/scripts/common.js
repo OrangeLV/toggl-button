@@ -9,12 +9,12 @@ function $(s, elem) {
 
 function createTag(name, className, innerHTML) {
   var tag = document.createElement(name);
-  tag.className = className;
-
+  if (className) {
+    tag.className = className;
+  }
   if (innerHTML) {
     tag.innerHTML = innerHTML;
   }
-
   return tag;
 }
 
