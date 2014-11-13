@@ -41,6 +41,26 @@ function invokeIfFunction(trial) {
   return trial;
 }
 
+function createOption(name, text) {
+  var option = document.createElement('option');
+  option.setAttribute('value', name);
+  option.text = text;
+  return option;
+}
+
+function createSelect(items, defaultText) {
+  var select = createTag('select');
+  if (defaultText) {
+    select.appendChild(createOption('', defaultText));
+  }
+
+  items.forEach(function(item) {
+    select.appendChild(createOption(item.value, item.text));
+  });
+
+  return select;
+}
+
 var togglbutton = {
   isStarted: false,
   element: null,
@@ -219,6 +239,147 @@ var togglbutton = {
     });
 
     document.addEventListener("click", handler);
+  },
+
+  createCustomTimerLink: function (issue) {
+    var container = createTag('div', 'toggl-button-container');
+    var taskLink = createTaskLink();
+    var projectSelect;
+    var timerLink;
+    var reportsLink;
+
+    var taskId;
+    var projectId;
+
+    function createTaskLink() {
+      taskLink = taskLink || (function() {
+        var _taskLink = createLink();
+        _taskLink.innerHTML = 'Create task';
+        return _taskLink;
+      })();
+      container.appendChild(taskLink);
+      return taskLink;
+    }
+
+    function removeTaskLink() {
+      if (taskLink) {
+        taskLink.parentNode.removeChild(taskLink);
+      }
+    }
+
+    function createReportsLink() {
+      reportsLink = reportsLink || (function() {
+        var _reportsLink = createLink();
+        _reportsLink.innerHTML = 'Reports';
+        _reportsLink.addEventListener('click', function() {
+          chrome.extension.sendMessage({type: 'showReports', taskId: taskId});
+          return false;
+        });
+        return _reportsLink;
+      })();
+      container.appendChild(reportsLink);
+      return reportsLink;
+    }
+
+    function removeReportsLink() {
+      if (reportsLink) {
+        reportsLink.parentNode.removeChild(reportsLink);
+      }
+    }
+
+    function createProjectSelect(projectList) {
+      projectSelect = projectSelect || createSelect(projectList, 'Select a Toggl project');
+      container.insertBefore(projectSelect, taskLink);
+      return projectSelect;
+    }
+
+    function removeProjectSelect() {
+      if (projectSelect) {
+        projectSelect.parentNode.removeChild(projectSelect);
+      }
+    }
+
+    function createTimerLink() {
+      timerLink = timerLink || togglbutton.createTimerLink({
+        description: ' ',
+        taskId: taskId,
+        projectId: projectId,
+        className: 'youtrack-orangelv'
+      });
+      container.appendChild(timerLink);
+      createReportsLink();
+      return timerLink;
+    }
+
+    function removeTimerLink() {
+      removeReportsLink()
+      if (timerLink) {
+        timerLink.parentNode.removeChild(timerLink);
+      }
+    }
+
+    taskLink.addEventListener('click', function(evt) {
+      removeTaskLink();
+      removeProjectSelect();
+
+      if (projectId == null) {
+        createTaskLink();
+        if (projectSelect) {
+          createProjectSelect();
+        }
+        alert('Please select a Toggl project');
+      } else {
+        chrome.extension.sendMessage({
+          type: 'createTask',
+          name: issue.code + '-' + issue.id + ' - ' + issue.summary,
+          estimation: issue.estimation,
+          projectId: projectId
+        }, function (response) {
+          if (response.success) {
+            taskId = response.task.id;
+            createTimerLink();
+          } else {
+            createTaskLink();
+            if (projectSelect) {
+              createProjectSelect();
+            }
+            alert('Unable to create a task');
+          }
+        });
+      }
+    });
+
+    chrome.extension.sendMessage({ type: 'findTask', issue: issue }, function (response) {
+      if (response.success) {
+        removeTaskLink();
+        taskId = response.task.id;
+        projectId = response.task.pid;
+        createTimerLink();
+      } else {
+        chrome.extension.sendMessage({ type: 'findProjects', issue: issue }, function (response) {
+          var projects = response.projects;
+          if (projects.length == 0) {
+            removeTaskLink();
+            container.appendChild(document.createTextNode('No projects found'));
+            container.classList.add('disabled');
+          } else if (projects.length == 1) {
+            projectId = projects[0].id;
+          } else {
+            createProjectSelect(projects.map(function(project) {
+              return { value: project.id, text: project.name };
+            }));
+
+            if (projectSelect) {
+              projectSelect.addEventListener('change', function(evt) {
+                projectId = +projectSelect.options[projectSelect.selectedIndex].value;
+              });
+            }
+          }
+        });
+      }
+    });
+
+    return container;
   },
 
   createTimerLink: function (params) {
