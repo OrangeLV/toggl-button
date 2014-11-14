@@ -43,8 +43,10 @@ togglbutton.render('.issueContainer', {}, function(container) {
         return result;
     })();
     var summary = (function() {
-        var summary = container.querySelector('.issue-summary'); 
-        toolbar = summary.parentNode;
+        var summary = container.querySelector('.issue-summary');
+        if (summary) {
+            toolbar = summary.parentNode;
+        }
         var result = summary;
         if (result) {
             result = result.innerHTML.trim();
@@ -90,7 +92,7 @@ togglbutton.render('.issueContainer', {}, function(container) {
           estimation: estimation,
         },
         onReports: function(data) {
-          var table = document.querySelector('table.fsi-properties tbody');
+            var table = document.querySelector('table.fsi-properties tbody');
             var row = document.createElement('tr');
 
             var label = document.createElement('div');
