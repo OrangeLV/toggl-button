@@ -223,7 +223,7 @@ var TogglButton = {
       entry = {
         time_entry: {
           start: start.toISOString(),
-          description: timeEntry.description,
+          description: timeEntry.description || '',
           wid: TogglButton.$user.default_wid,
           tid: timeEntry.taskId || null,
           pid: timeEntry.projectId || null,
@@ -334,7 +334,7 @@ var TogglButton = {
       method: 'PUT',
       payload: {
         time_entry: {
-          description: timeEntry.description,
+          description: timeEntry.description || '',
           pid: timeEntry.pid,
           tid: taskId || null,
           tags: timeEntry.tags

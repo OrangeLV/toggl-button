@@ -124,8 +124,13 @@ var togglbutton = {
     elemRect = togglbutton.element.getBoundingClientRect();
     editForm = $("#toggl-button-edit-form");
 
+
+
     if (editForm !== null) {
-      $("#toggl-button-description").value = response.entry.description || '';
+      var description = response.entry.description;
+      if (description) {
+        $("#toggl-button-description").value = description;
+      }
       $("#toggl-button-project").value = pid;
       projectSelect = document.getElementById("toggl-button-project");
       $("#toggl-button-project-placeholder > div").innerHTML = (pid === 0) ? "Add project" : projectSelect.options[projectSelect.selectedIndex].text;
@@ -158,9 +163,10 @@ var togglbutton = {
     };
 
     submitForm = function (that) {
+      var description = $("#toggl-button-description").value;
       var request = {
         type: "update",
-        description: $("#toggl-button-description").value,
+        description: description || '',
         pid: $("#toggl-button-project").value,
         tags: togglbutton.getSelectedTags()
       };
@@ -179,7 +185,10 @@ var togglbutton = {
       $("#toggl-button-tag-placeholder > div", editForm).innerHTML = tags;
     };
 
-    $("#toggl-button-description", editForm).value = response.entry.description;
+    var description = response.entry.description;
+    if (description) {
+      $("#toggl-button-description", editForm).value = description;
+    }
     $("#toggl-button-project", editForm).value = pid;
     projectSelect = $("#toggl-button-project", editForm);
     $("#toggl-button-project-placeholder > div", editForm).innerHTML = (pid === 0) ? "Add project" : projectSelect.options[projectSelect.selectedIndex].text;
