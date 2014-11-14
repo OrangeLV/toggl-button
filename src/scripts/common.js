@@ -125,7 +125,7 @@ var togglbutton = {
     editForm = $("#toggl-button-edit-form");
 
     if (editForm !== null) {
-      $("#toggl-button-description").value = response.entry.description;
+      $("#toggl-button-description").value = response.entry.description || '';
       $("#toggl-button-project").value = pid;
       projectSelect = document.getElementById("toggl-button-project");
       $("#toggl-button-project-placeholder > div").innerHTML = (pid === 0) ? "Add project" : projectSelect.options[projectSelect.selectedIndex].text;
@@ -302,7 +302,7 @@ var togglbutton = {
 
     function createTimerLink() {
       timerLink = timerLink || togglbutton.createTimerLink({
-        description: ' ',
+        description: '',
         taskId: taskId,
         projectId: projectId,
         className: 'youtrack-orangelv'
