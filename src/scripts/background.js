@@ -22,9 +22,9 @@ var TogglButton = {
       '<form>' +
       '<a class="toggl-button {service} active" href="#">Stop timer</a>' +
       '<input type="button" value="x" id="toggl-button-hide">' +
-      '<p class="toggl-button-row">' +
+      '<div class="toggl-button-row">' +
         '<input name="toggl-button-description" type="text" id="toggl-button-description" class="toggl-button-input" value="">' +
-      '</p>' +
+      '</div>' +
       '<div class="toggl-button-row">' +
         '<select class="toggl-button-input" id="toggl-button-project" name="toggl-button-project">{projects}</select>' +
         '<div id="toggl-button-project-placeholder" class="toggl-button-input" disabled><div class="toggl-button-text">Add project</div><span>▼</span></div>' +
@@ -33,9 +33,9 @@ var TogglButton = {
         '<select class="toggl-button-input" id="toggl-button-tag" name="toggl-button-tag" multiple>{tags}</select>' +
         '<div id="toggl-button-tag-placeholder" class="toggl-button-input" disabled><div class="toggl-button-text">Add tags</div><span>▼</span></div>' +
       '</div>' +
-      '<p id="toggl-button-submit-row">' +
+      '<div id="toggl-button-submit-row" class="toggl-button-row">' +
         '<div id="toggl-button-update">DONE</div>' +
-      '</p>' +
+      '</div>' +
       '</from>' +
     '</div>',
 
