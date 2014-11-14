@@ -93,6 +93,9 @@ togglbutton.render('.issueContainer', {}, function(container) {
         },
         onReports: function(data) {
             var table = document.querySelector('table.fsi-properties tbody');
+            if (!table) {
+                return;
+            }
             var row = document.createElement('tr');
 
             var label = document.createElement('div');
