@@ -120,7 +120,7 @@ var TogglButton = {
   findTask: function (req, sendResponse) {
     var result;
     TogglButton.$user.tasks.forEach(function (task) {
-      if (!result && task.name.indexOf(req.issue.code + '-' + req.issue.id) != -1) {
+      if (!result && task.name.indexOf(req.issue.code + '-' + req.issue.id + ' ') != -1) {
         result = task;
       }
     });
