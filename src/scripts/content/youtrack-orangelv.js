@@ -69,8 +69,8 @@ togglbutton.render('.issueContainer', {}, function(container) {
 
                     var secondsInMinute = 60;
                     var secondsInHour = secondsInMinute * 60;
-                    var secondsInDay = secondsInHour * 24;
-                    var secondsInWeek = secondsInDay * 7;
+                    var secondsInDay = secondsInHour * 8;
+                    var secondsInWeek = secondsInDay * 5;
 
                     var weeks = matches[2] || 0;
                     var days = matches[4] || 0;
