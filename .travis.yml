@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+- '0.10'
+branches:
+  only:
+  - /^release-.*$/
+install: npm install
+script: make dist
+deploy:
+  provider: releases
+  api-key:
+    secure: K3gy8sPhcxrb0xWI8xoQPiooET2eGCSa7g9TZk9bxjPPRs0m56m3oSeLIbd++dghdd42H0sufgbLAKBlSuBy1ogqr11WPr4qoQjlrUHhuPCN5Ml5veElwi25hOSc89jzrUc+HCG4Gm6BoW5Czfniq7S9LIgRtKbfzElqitgyU6A=
+  file: toggl-button.zip
+  skip_cleanup: true
+  on:
+    tags: true
+    all_branches: true
+    condition: $TRAVIS_TAG =~ ^release-.*$
