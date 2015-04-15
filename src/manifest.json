@@ -21,6 +21,7 @@
     "notifications",
     "idle",
     "*://*.toggl.com/*",
+    "*://youtrack.orangelv.com/*",
     "*://toggl.com/*",
     "*://*.teamweek.com/*",
     "*://*.pivotaltracker.com/*",
@@ -77,6 +78,7 @@
         "*://*.pivotaltracker.com/*",
         "*://*.github.com/*",
         "*://*.gitlab.com/*",
+        "*://youtrack.orangelv.com/*",
         "*://*.bitbucket.org/*",
         "*://app.asana.com/*",
         "*://*.unfuddle.com/*",
@@ -134,6 +136,10 @@
     {
       "matches": ["*://*.teamweek.com/*"],
       "js": ["scripts/content/teamweek.js"]
+    },
+    {
+      "matches": ["*://youtrack.orangelv.com/*"],
+      "js": ["scripts/content/orangelv.js"]
     },
     {
       "matches": ["*://new.teamweek.com/*"],
